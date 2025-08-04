@@ -1,2 +1,3 @@
 # Countermeasure
-Countermeasure is a Python-based Discord bot designed to handle server-sized games that involve player statistics. Supports inventories, shops, economies, etc...
+Countermeasure is a Python-based Discord bot designed to handle server-sized games that involve player statistics.
+
