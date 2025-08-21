@@ -20,7 +20,7 @@ class Events(commands.Cog):
 			await member.send(f"Welcome to {member.guild.name}. Please read the rules.")
 		except discord.Forbidden:
 			pass
-		await self.bot.db_add_user(member)
+		# await self.bot.db_add_user(member) ==> Moved to scheduler... probably using db_add_user
 
 	@commands.Cog.listener()
 	async def on_member_leave(self, member:discord.Member):
@@ -29,4 +29,4 @@ class Events(commands.Cog):
 
 async def setup(bot:commands.Bot):
 	await bot.add_cog(Events(bot))
-	print("[cogs.events] cog added... current tree: ", [c.qualified_name for c in bot.tree.get_commands()])
+	print("[cogs.events] added... current tree: ", [c.qualified_name for c in bot.tree.get_commands()])

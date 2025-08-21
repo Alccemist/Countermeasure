@@ -10,6 +10,7 @@ INFORMATION
 """
 import database, discord, os
 from discord.ext import commands
+from utility_libs.scheduler import PayoutScheduler
 
 class CountermeasureClient(commands.Bot):
 	def __init__(self, *, admin_role:int, command_prefix:str, intents:discord.Intents, debug_guild:int):
@@ -20,11 +21,15 @@ class CountermeasureClient(commands.Bot):
 		self.debug_guild:int = debug_guild
 
 	async def setup_hook(self):
+		# 0. Setup: Get channel ID(s)
+		self.announce_channel = int(os.getenv("ANNOUNCE_CHANNEL_ID"))
+
 		# 1. Open one persistent connection
-		print("Connecting to database...")
+		print("Setting up database...")
+		await database.initialize_database()
 		self.db = await database.connect_database()
 
-		# 2. Load cogs
+		# 2. Load cogs ==> scheduler_cog will read self.db / self.announce_channel
 		print("Loading cogs/extensions...")
 		for filename in os.listdir("src\\cogs"):
 			if filename.endswith(".py") and filename != "__init__.py":
@@ -33,8 +38,11 @@ class CountermeasureClient(commands.Bot):
 					await self.load_extension(cog)
 				except Exception as e:
 					print(f"Failed to load extension: {e}")
+
+		# 3. Set up scheduler
+		#	==> We expect the scheduler_cog to run everything, including check_status
 		
-		# 3. Dev sync
+		# Extra Dev sync
 		# ==> Show what’s in the tree *before* sync. Debug use
 		# ==> print("Tree commands before sync:", [c.qualified_name for c in self.tree.get_commands()])
 
@@ -56,8 +64,4 @@ class CountermeasureClient(commands.Bot):
 		if self.db:
 			await database.close(self.db)
 		await super().close()
-
-
-
-
 

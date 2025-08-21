@@ -1,42 +1,44 @@
 """
 INFORMATION
 
-	Main.py is where everything is set into motion.
-	Please create & fill out .env before running the bot.
-
+		Main.py is where everything is set into motion.
 """
 
 """ [IMPORTS] """
 import discord, logging, os
-from bot import CountermeasureClient
-from discord.ext.commands import Bot
-from dotenv import load_dotenv
-# Not yet complete... we will fill out bot.py and import our bot. Keeps main.py elegant. 
+from utility_libs import utilities
 
-""" [SETUP] """
-load_dotenv(dotenv_path="src\\config\\.env")
-logger = logging.FileHandler(filename="Countermeasure_Main.log", encoding='utf-8', mode='w')
+def main():
+		
+	""" [SETUP] """
+	setup_util = utilities.SetupUtilities()
+	setup_status = setup_util.HandleSetup()
+	logger = logging.FileHandler(filename="Countermeasure_Main.log", encoding='utf-8', mode='w')
+	CMD_PREFIX = "<<"  # PREFIX DEPRECATED... Has no use.
 
-""" [CONFIG] """
-# ==> REMOVE THESE BEFORE PUSHING!!!
-# ==> See documentation for config details.
-ADMIN_ROLE_ID:int = int(os.getenv("ADMIN_ROLE_ID"))
-TOKEN:str = str(os.getenv("TOKEN"))
-DEBUG_GUILD_ID:int = int(os.getenv("DEBUG_GUILD_ID"))
-CMD_PREFIX = "<<"  # PREFIX DEPRECATED... Has no use.
+	if setup_status:
+		ADMIN_ROLE = int(os.getenv("ADMIN_ROLE_ID"))
+		DEBUG_GUILD = int(os.getenv("DEBUG_GUILD_ID"))
+		TOKEN = str(os.getenv("TOKEN"))
+		from bot import CountermeasureClient
+	else:
+		print("Error with setup. Please delete any files in src/config and restart from main.py.")
+		return
 
+	# <Initialize Discord, instantiate client (bot)>
+	intents = discord.Intents.default()
+	intents.guilds = True
+	intents.message_content = True 
+	intents.members = True
 
-# <Initialize Discord, Bot>
-intents = discord.Intents.default()
-intents.guilds = True
-intents.message_content = True 
-intents.members = True
+	client = CountermeasureClient(
+		admin_role=ADMIN_ROLE,
+		command_prefix=CMD_PREFIX,
+		intents=intents,
+		debug_guild=DEBUG_GUILD
+	)
 
-client = CountermeasureClient(
-	admin_role=ADMIN_ROLE_ID,
-	command_prefix=CMD_PREFIX,
-	intents=intents,
-	debug_guild=DEBUG_GUILD_ID
-)
+	client.run(TOKEN, log_handler=logger, log_level = logging.DEBUG)
 
-client.run(TOKEN, log_handler=logger, log_level = logging.DEBUG)
+if __name__ == "__main__":
+	main()

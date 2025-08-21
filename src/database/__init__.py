@@ -14,10 +14,20 @@ from .data_handler import(
 	create_indices,
 	add_user,
 	remove_user,
-	get_table,
+	get_table_asc,
+	add_bal,
+	add_res,
+	remove_user_object,
 	add_economy,
 	add_item,
-	add_tech
+	add_tech,
+	get_table_row,
+	get_user_table_asc,
+	get_inventory_item,
+	remove_object,
+	item_to_inv,
+	econ_to_inv,
+	tech_to_inv
 )
 
 async def initialize_database():
@@ -32,8 +42,18 @@ __all__ = [
 	"initialize_database",
 	"add_user",
 	"remove_user",
-	"get_table",
+	"get_table_asc",
+	"get_user_table_asc",
+	"add_bal",
+	"add_res",
+	"remove_user_object",
 	"add_economy",
 	"add_item",
-	"add_tech"
+	"add_tech",
+	"get_table_row",
+	"get_inventory_item",
+	"remove_object",
+	"item_to_inv",
+	"econ_to_inv",
+	"tech_to_inv"
 ]
