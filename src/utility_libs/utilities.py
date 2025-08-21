@@ -14,7 +14,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 """ [SETUP] """
-ENV_PATH = Path("src/config/.env")
+ENV_PATH = Path("src/.env")
 
 class SetupUtilities:
 	"""
@@ -25,15 +25,15 @@ class SetupUtilities:
 		if not ENV_PATH.exists():
 			print("No .env file found in src/config/env. Let's set one up.\n" \
 			"Please have Discord developer mode enabled and a bot with 'server members' & 'message content' intents ready.\n" \
-			"For more information, please read README.")
+			"For more information, please read the README.")
 			with open(ENV_PATH, "w") as f:
-				f.write(f"ADMIN_ROLE_ID = {input('Server admin role ID: ')}\n")
-				f.write(f"ANNOUNCE_CHANNEL_ID = {input('Game or bot announcement channel ID: ')}\n")
-				f.write(f"DEBUG_GUILD_ID = {input('Server ID: ')}\n")
-				f.write(f"OBJECTS_PER_PAGE = {input('How many items in one catalogue page (10 suggested): ')}\n")
-				f.write(f"PAYOUT_STEP = {input('Days between each payout: ')}\n")
-				f.write(f"SCHEDULER_RUNS_UTC = {input('Payouts should occur at this hour UTC: ')}\n")
-				f.write(f"TOKEN = {input('Bot token: ')}\n")
+				f.write(f"ADMIN_ROLE_ID = {input('Server admin role ID [int]: ')}\n")
+				f.write(f"ANNOUNCE_CHANNEL_ID = {input('Game or bot announcement channel ID [int]: ')}\n")
+				f.write(f"DEBUG_GUILD_ID = {input('Server ID [int]: ')}\n")
+				f.write(f"OBJECTS_PER_PAGE = {input('How many items in one catalogue page (10 suggested) [int]: ')}\n")
+				f.write(f"PAYOUT_STEP = {input('Days between each payout [int]: ')}\n")
+				f.write(f"SCHEDULER_RUNS_UTC = {input('Payouts should occur at this hour UTC [int]: ')}\n")
+				f.write(f"TOKEN = {input('Bot token [str]: ')}\n")
 			print(f"Created {ENV_PATH.absolute()}... Restart from main.py!")
 			sys.exit()
 		else:
