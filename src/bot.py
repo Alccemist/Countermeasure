@@ -3,9 +3,7 @@ INFORMATION
 
 		This contains the bot's functionality. The guild ID and bot token do not belong here.
 	Guild ID and bot token are used in .tree.command(...) and client.run(...), for command development and bot identification respectively.
-	Actual event handling is addressed in event_handler.py 
-	Everything is arranged and initialized in main.py
-	This bot exclusively uses slash commands. Sensitive config information should be stored in config/.env
+	This bot exclusively uses slash commands.
 
 """
 import database, discord, os
