@@ -9,7 +9,6 @@ INFORMATION
 import aiosqlite, asyncio, contextlib, os
 from datetime import datetime, date, time, timedelta, timezone 
 from dotenv import find_dotenv, load_dotenv
-from pathlib import Path
 from typing import Awaitable, Callable, Optional
 from utility_libs.utilities import SchedulerUtilities, LoggingUtilities
 
@@ -18,11 +17,8 @@ SchUtil = SchedulerUtilities()
 LogUtil = LoggingUtilities(True,True)
 
 ENV = find_dotenv()
-if not ENV:
-    path = Path(__file__).resolve().parents[1] / "config" / ".env"
-load_dotenv(path)
+load_dotenv(ENV)
 
-ENV_PATH = find_dotenv()
 payout_step:int = int(os.getenv("PAYOUT_STEP"))
 RUN_AT_UTC:time = time(int(os.getenv("SCHEDULER_RUNS_UTC")))
 

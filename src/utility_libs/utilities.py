@@ -23,7 +23,7 @@ class SetupUtilities:
 	def HandleSetup(self) -> bool:
 		# ==> Returns True if we're ready and our .env has been loaded.
 		if not ENV_PATH.exists():
-			print("No .env file found in src/config/env. Let's set one up.\n" \
+			print("No .env file found in src/env. Let's set one up.\n" \
 			"Please have Discord developer mode enabled and a bot with 'server members' & 'message content' intents ready.\n" \
 			"For more information, please read the README.")
 			with open(ENV_PATH, "w") as f:
