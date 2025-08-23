@@ -22,7 +22,7 @@ schedule
 """
 
 """ [SETUP] """
-DB_PATH = "src/database/Countermeasure.db"
+DB_PATH = "database/Countermeasure.db"
 LogUtil = LoggingUtilities(True,True)
 
 WHITELISTED_TABLES = {

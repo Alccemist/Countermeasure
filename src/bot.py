@@ -29,7 +29,7 @@ class CountermeasureClient(commands.Bot):
 
 		# 2. Load cogs ==> scheduler_cog will read self.db / self.announce_channel
 		print("Loading cogs/extensions...")
-		for filename in os.listdir("src\\cogs"):
+		for filename in os.listdir("cogs"):
 			if filename.endswith(".py") and filename != "__init__.py":
 				cog = f"cogs.{filename[:-3]}" # Because load_extension expects the name without .py
 				try:
