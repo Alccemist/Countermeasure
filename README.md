@@ -10,7 +10,7 @@ I have used Python 3.12.4 to write this bot. Future versions are likely fine.
 To install requirements, enter this inside the parent folder containing everything:
 ```pip install -r requirements.txt```
 
-This bot comes with a console-based env-creator for our convenience. We should enable Discord development mode and be familiar with creating a bot + intents so we can provide all the needed information.
+This bot comes with a console-based env creator for our convenience. We should enable Discord development mode and be familiar with creating a bot + intents so we can provide all the needed information.
 
 ## License
 You may do as you wish with this source code, but please keep a link to the original:
