@@ -1,4 +1,4 @@
-# Countermeasure 1.0.0
+# Countermeasure
 ## Introduction
 Countermeasure is a Python-based Discord bot designed to handle server-sized games that involve player statistics.
 I was on a crunch for time when developing this bot, so forgive me for — and inform me of — any problems.
