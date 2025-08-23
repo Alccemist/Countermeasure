@@ -281,7 +281,7 @@ async def add_tech(
 @market.command(name="delete_object")
 @app_commands.choices(markets=[
 	app_commands.Choice(name="Economy",		value="economy_market"),
-	app_commands.Choice(name="Items",		value="items_market"),
+	app_commands.Choice(name="Items",		value="item_market"),
 	app_commands.Choice(name="Technology",	value="tech_market"),
 ])
 async def delete_object(
@@ -320,7 +320,7 @@ async def delete_object(
 async def buy_item(itx:discord.Interaction, name:str, qty:int):
 	bot = typing.cast(commands.Bot, itx.client) # ==> Fetches the running client
 	user = itx.user
-	log_utils.print_log(f"sell_item called by {user.name} with args name: <{name}>, qty: <{qty}>")
+	log_utils.print_log(f"buy_item called by {user.name} with args name: <{name}>, qty: <{qty}>")
 
 	await itx.response.defer()
 	if qty <= 0:
@@ -337,6 +337,7 @@ async def buy_item(itx:discord.Interaction, name:str, qty:int):
 		)
 		if not itemRow:
 			await itx.followup.send("No matching item found...")
+			return
 		plrRow = await database.get_table_row(
 			db=bot.db,
 			table_name="users",
@@ -345,16 +346,33 @@ async def buy_item(itx:discord.Interaction, name:str, qty:int):
 		)
 		if not plrRow:
 			await itx.followup.send("No user found...")
+			return
+		plrTec = await database.get_user_table_asc(
+			bot.db,
+			"user_tech",
+			user.id,
+			"tech_income"
+		)
+		if not plrTec:
+			log_utils.print_debug("No user tech found...")
 
-	# Handle transaction
-		log_utils.print_debug(f"Item cost: {itemRow['cost']}, Plr bal: {plrRow['balance']}")
-		if itemRow['cost']*qty <= plrRow['balance']:
-			log_utils.print_debug(f"Deducting {itemRow['cost']*qty} from player...")
-			await database.add_bal(bot.db, user, -itemRow['cost']*qty)
-			await database.item_to_inv(db=bot.db, item_name=name, user_id=user.id, quantity=qty)
-			await itx.followup.send(f"Bought {qty} of {name} for {itemRow['cost']*qty} :coin:!")
-		else:
-			await itx.followup.send("Not enough money!")
+		# Check if player has tech
+		req = itemRow.get("req_tech")
+		has_req = (not req) or any(t.get("name") == req for t in plrTec)
+
+		if has_req:
+			# Handle transaction
+			log_utils.print_debug(f"Item cost: {itemRow['cost']}, Plr bal: {plrRow['balance']}")
+			if itemRow['cost']*qty <= plrRow['balance']:
+				log_utils.print_debug(f"Deducting {itemRow['cost']*qty} from player...")
+				await database.add_bal(bot.db, user, -itemRow['cost']*qty)
+				await database.item_to_inv(db=bot.db, item_name=name, user_id=user.id, quantity=qty)
+				await itx.followup.send(f"Bought {qty} of {name} for {itemRow['cost']*qty} :coin:!")
+			else:
+				await itx.followup.send("Not enough money!")
+		else:		
+			await itx.followup.send(f"Missing required tech <{req}>.")
+			log_utils.print_debug(f"{user.name} lacks the required tech <{req}>")
 
 	except Exception as e:
 		log_utils.print_log(f"[ERR]: {type(e).__name__}: {e}")
@@ -427,6 +445,7 @@ async def research_tech(itx:discord.Interaction, tech:str):
 		)
 		if not techRow:
 			await itx.followup.send("No matching item found...")
+			return
 		plrRow = await database.get_table_row(
 			db=bot.db,
 			table_name="users",
@@ -435,16 +454,33 @@ async def research_tech(itx:discord.Interaction, tech:str):
 		)
 		if not plrRow:
 			await itx.followup.send("No user found...")
+			return
+		plrTec = await database.get_user_table_asc(
+			bot.db,
+			"user_tech",
+			user.id,
+			"tech_income"
+		)
+		if not plrTec:
+			log_utils.print_debug("No user tech found...")
+		
+		# Check if player has tech
+		req = techRow.get("req_tech")
+		has_req = (not req) or any(t.get("name") == req for t in plrTec)
 
-	# Handle transaction
-		log_utils.print_debug(f"Tech cost: {techRow['cost']}, Plr res: {plrRow['research']}")
-		if techRow['cost'] <= plrRow['research']:
-			log_utils.print_debug(f"Deducting {techRow['cost']} from player...")
-			await database.add_res(bot.db, itx.user, -techRow['cost'])
-			await database.tech_to_inv(db=bot.db, tech_name=tech, user_id=user.id)
-			await itx.followup.send(f"Researched {tech} for {techRow['cost']} :alembic:!")
-		else:
-			await itx.followup.send("Not enough RP!")
+		if has_req:
+			# Handle transaction
+			log_utils.print_debug(f"Tech cost: {techRow['cost']}, Plr res: {plrRow['research']}")
+			if techRow['cost'] <= plrRow['research']:
+				log_utils.print_debug(f"Deducting {techRow['cost']} from player...")
+				await database.add_res(bot.db, itx.user, -techRow['cost'])
+				await database.tech_to_inv(db=bot.db, tech_name=tech, user_id=user.id)
+				await itx.followup.send(f"Researched {tech} for {techRow['cost']} :alembic:!")
+			else:
+				await itx.followup.send("Not enough RP!")
+		else:		
+			await itx.followup.send(f"Missing required tech <{req}>.")
+			log_utils.print_debug(f"{user.name} lacks the required tech <{req}>")
 
 	except Exception as e:
 		log_utils.print_log(f"[ERR]: {type(e).__name__}: {e}")

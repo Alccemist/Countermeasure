@@ -14,7 +14,9 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 """ [SETUP] """
-ENV_PATH = Path(".env")
+SRC_DIR = Path(__file__).resolve().parents[1]
+print(SRC_DIR)
+ENV_PATH = SRC_DIR/".env"
 
 class SetupUtilities:
 	"""
